@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting Started — Jo Builds</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #4CAF25;
+      --green-light: #E8F5E0;
+      --green-dark: #2D6A0A;
+      --bg: #FAFAF7;
+      --text: #141414;
+      --muted: #666;
+      --border: rgba(0,0,0,0.08);
+      --radius: 16px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--text);
+      padding: 2.5rem 2rem 3rem;
+    }
+    .header-inner { max-width: 680px; margin: 0 auto; }
+    .logo { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 2rem; display: flex; align-items: center; gap: 8px; }
+    .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+    header h1 { font-family: 'Instrument Serif', serif; font-size: clamp(32px, 6vw, 48px); font-weight: 400; letter-spacing: -1.5px; line-height: 1.1; color: #fff; margin-bottom: 1rem; }
+    header h1 em { font-style: italic; color: var(--green); }
+    header p { font-size: 16px; color: rgba(255,255,255,0.55); line-height: 1.75; max-width: 520px; }
+
+    /* MAIN */
+    main { max-width: 680px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+
+    /* INTRO CARD */
+    .intro-card {
+      background: var(--green-light); border: 1px solid #bbf7d0;
+      border-radius: var(--radius); padding: 1.5rem;
+      margin-bottom: 3rem; display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .intro-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+    .intro-card p { font-size: 14px; color: var(--green-dark); line-height: 1.7; }
+    .intro-card strong { font-weight: 700; }
+
+    /* STEPS */
+    .step { margin-bottom: 2.5rem; }
+    .step-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .step-num {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--text); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800; flex-shrink: 0;
+    }
+    .step-num.done { background: var(--green); }
+    .step-title { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+    .step-body { padding-left: 52px; }
+    .step-body p { font-size: 14px; color: var(--muted); line-height: 1.75; margin-bottom: 1rem; }
+    .step-body p:last-child { margin-bottom: 0; }
+    .step-body strong { color: var(--text); font-weight: 700; }
+
+    /* CHECKLIST */
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 1rem; }
+    .checklist li {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 10px; padding: 0.875rem 1rem;
+      font-size: 14px; line-height: 1.5;
+    }
+    .checklist li .check {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid #ddd; flex-shrink: 0; margin-top: 1px;
+    }
+    .checklist li .check.green { border-color: var(--green); background: var(--green-light); display: flex; align-items: center; justify-content: center; }
+    .checklist li .check.green::after { content: '✓'; font-size: 11px; color: var(--green-dark); font-weight: 700; }
+    .checklist li .item-text strong { display: block; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .checklist li .item-text span { color: var(--muted); font-size: 13px; }
+
+    /* TIP BOX */
+    .tip {
+      background: #fff; border: 1px solid var(--border); border-left: 3px solid var(--green);
+      border-radius: 0 10px 10px 0; padding: 1rem 1.25rem;
+      font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 1rem;
+    }
+    .tip strong { color: var(--text); }
+
+    /* DIVIDER */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+    /* WHAT HAPPENS NEXT */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .timeline-item { display: flex; gap: 1rem; padding-bottom: 1.5rem; position: relative; }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-left { display: flex; flex-direction: column; align-items: center; gap: 0; }
+    .timeline-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); flex-shrink: 0; margin-top: 5px; }
+    .timeline-line { width: 2px; background: var(--green-light); flex: 1; margin-top: 4px; }
+    .timeline-item:last-child .timeline-line { display: none; }
+    .timeline-content { padding-bottom: 0; }
+    .timeline-content strong { font-size: 14px; font-weight: 700; display: block; margin-bottom: 3px; }
+    .timeline-content span { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* CONTACT FOOTER */
+    .contact-strip {
+      background: var(--text); border-radius: var(--radius);
+      padding: 2rem; display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 3rem;
+    }
+    .contact-strip p { font-size: 14px; color: rgba(255,255,255,0.6); }
+    .contact-strip strong { color: #fff; font-size: 15px; display: block; margin-bottom: 4px; }
+    .contact-btn {
+      background: var(--green); color: #fff; border: none;
+      padding: 11px 24px; border-radius: 100px; font-size: 14px;
+      font-weight: 700; font-family: 'Cabinet Grotesk', sans-serif;
+      text-decoration: none; white-space: nowrap;
+    }
+
+    /* SECTION LABEL */
+    .section-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 3px; color: var(--green); margin-bottom: 1.25rem; display: block;
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 2rem 1.25rem 2.5rem; }
+      main { padding: 2rem 1.25rem 4rem; }
+      .contact-strip { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo"><span class="logo-dot"></span>Jo Builds</div>
+      <h1>Let's get your project <em>started.</em></h1>
+      <p>Here's everything you need to set up before we begin — it's simpler than it looks, and I'm here to help if you get stuck.</p>
+    </div>
+  </header>
+
+  <main>
+
+    <div class="intro-card">
+      <div class="intro-icon">👋</div>
+      <p><strong>Before I start building your website, there are a few things that need to be set up in your name.</strong> This keeps you in full control of your online presence — if you ever change web designers or want to manage things yourself, everything belongs to you.</p>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Register your domain name</div>
+      </div>
+      <div class="step-body">
+        <p>Your domain is your web address — for example <strong>yourbusiness.co.uk</strong>. You need to own this yourself.</p>
+        <ul class="checklist">
+          <li>
+            <div class="check"></div>
+            <div class="item-text"><strong>Go to cloudflare.com/products/registrar</strong><span>Search for your preferred domain name</span></div>
+          </li>
+          <li>
+            <div class="check"></div>
+            <div class="item-text"><strong>Create a free Cloudflare account</strong><span>Use your business email address</span></div>
+          </li>
+          <li>
+            <div class="check"></div>
+            <div class="item-text"><strong>Register your domain</strong><span>Cloudflare sells domains at cost with no markup — usually £8–12/year for a .co.uk</span></div>
+          </li>
+          <li>
+            <div class="check"></div>
+            <div class="item-text"><strong>Share your Cloudflare login details with me</strong><span>I'll need access to set up your DNS records when we go live</span></div>
+          </li>
+        </ul>
+        <div class="tip"><strong>Not sure what domain to pick?</strong> Go for yourbusinessname.co.uk if you're UK-based, or .com if you serve customers worldwide. Keep it short and easy to spell. I'm happy to advise before you register.</div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- STEP 2 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <div class="step-title">Set up a business email address</div>
+      </div>
+      <div class="step-body">
+        <p>A professional email like <strong>hello@yourbusiness.co.uk</strong> makes a huge difference to how clients perceive you. Here are your options:</p>
+        <ul class="checklist">
+          <li>
+            <div class="check green"></div>
+            <div class="item-text"><strong>Free option — Cloudflare Email Routing</strong><span>Forwards emails sent to your business address straight to your existing inbox. Takes 5 minutes to set up. I can do this for you.</span></div>
+          </li>
+          <li>
+            <div class="check"></div>
+            <div class="item-text"><strong>Paid option — Google Workspace (£4.60/month)</strong><span>A full Gmail inbox at your custom address. Best option if you send a lot of outbound emails to clients.</span></div>
+          </li>
+        </ul>
+        <div class="tip"><strong>My recommendation:</strong> Start with the free Cloudflare forwarding. Upgrade to Google Workspace once you're trading and sending regular client emails.</div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- STEP 3 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">3</div>
+        <div class="step-title">Create a Google account for your business</div>
+      </div>
+      <div class="step-body">
+        <p>We'll use this to set up Google Analytics and Google Search Console — two free tools that show you how many people visit your site and how it appears in Google search results.</p>
+        <ul class="checklist">
+          <li>
+            <div class="check"></div>
+            <div class="item-text"><strong>Create a Google account</strong><span>Go to accounts.google.com — use your business email if possible</span></div>
+          </li>
+          <li>
+            <div class="check"></div>
+            <div class="item-text"><strong>Share the email address with me</strong><span>I'll create and set up both Google Analytics and Search Console for you, then add you as an admin</span></div>
+          </li>
+        </ul>
+        <div class="tip"><strong>Important:</strong> These accounts should be registered to you, not me. That way your website data is always yours, no matter what happens in the future.</div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- STEP 4 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">4</div>
+        <div class="step-title">Send me your content</div>
+      </div>
+      <div class="step-body">
+        <p>I'll need a few things from you to build your site. Don't worry if you don't have everything — we can work with what you have and build the rest together.</p>
+        <ul class="checklist">
+          <li>
+            <div class="check"></div>
+            <div class="item-text"><strong>Your logo</strong><span>PNG or SVG format if you have one — if not, I can help with basic branding</span></div>
+          </li>
+          <li>
+            <div class="check"></div>
+            <div class="item-text"><strong>Photos of your work or team</strong><span>Even phone photos are fine to start with. Good images make a big difference.</span></div>
+          </li>
+          <li>
+            <div class="check"></div>
+            <div class="item-text"><strong>A short description of your business</strong><span>What you do, who you help, and what makes you different</span></div>
+          </li>
+          <li>
+            <div class="check"></div>
+            <div class="item-text"><strong>Your services and prices (if you want them listed)</strong><span>Totally optional — many businesses prefer not to show prices publicly</span></div>
+          </li>
+          <li>
+            <div class="check"></div>
+            <div class="item-text"><strong>Any websites you like the look of</strong><span>This helps me understand your style preferences</span></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- WHAT HAPPENS NEXT -->
+    <span class="section-label">What happens next</span>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+        <div class="timeline-content"><strong>You complete the steps above</strong><span>Send me your domain details, Google account email and any content you have</span></div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+        <div class="timeline-content"><strong>I send you a design concept</strong><span>Usually within 2–3 days. You give feedback and we refine until it's perfect.</span></div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+        <div class="timeline-content"><strong>I build and launch your site</strong><span>I handle all the technical setup — DNS, hosting, forms, analytics. You just review and approve.</span></div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+        <div class="timeline-content"><strong>You go live 🎉</strong><span>I hand over everything — logins, a simple guide to updating your site, and I'm always available if you need help.</span></div>
+      </div>
+    </div>
+
+    <!-- CONTACT STRIP -->
+    <div class="contact-strip">
+      <div>
+        <strong>Got questions? Just ask.</strong>
+        <p>I'm happy to jump on a quick call or answer anything over email.</p>
+      </div>
+      <a href="mailto:hello@jobuilds.co.uk" class="contact-btn">hello@jobuilds.co.uk</a>
+    </div>
+
+  </main>
+
+</body>
+</html>
