@@ -327,22 +327,55 @@
 
     /* MOBILE */
     @media (max-width: 680px) {
+      /* NAV */
       nav { padding: 1rem 1.25rem; }
       .nav-links { display: none; }
-      .hero { padding: 3rem 1.25rem 0; }
-      .hero-h1 { letter-spacing: -2px; }
-      .hero-split { grid-template-columns: 1fr; gap: 2rem; padding-bottom: 3rem; }
+
+      /* HERO */
+      .hero { padding: 2.5rem 1.25rem 0; }
+      .hero-h1 { font-size: clamp(40px, 11vw, 64px); letter-spacing: -2px; }
+      .hero-inner { grid-template-columns: 1fr; gap: 2rem; padding-bottom: 3rem; }
+      .hero-right { gap: 1rem; }
       .hero-stats-side { display: grid; grid-template-columns: 1fr 1fr; }
       .hstat-row { border-right: 1px solid var(--border); }
       .hstat-row:nth-child(even) { border-right: none; }
-      .section { padding: 3.5rem 1.25rem; }
+      .hstat-n { font-size: 24px; }
+
+      /* TICKER */
+      .m-item { font-size: 11px; padding: 0 1.25rem; }
+
+      /* SECTIONS */
+      .section { padding: 3rem 1.25rem; }
+      .sec-title { font-size: clamp(26px, 7vw, 38px); }
+
+      /* PROCESS */
       .process-grid { grid-template-columns: 1fr 1fr; }
+      .proc { padding: 1.25rem 1rem; }
+      .proc-n { font-size: 36px; }
+
+      /* SERVICES */
       .svc-grid { grid-template-columns: 1fr; }
+
+      /* PORTFOLIO */
       .work-grid { grid-template-columns: 1fr; }
-      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-      .cta-box { grid-template-columns: 1fr; padding: 2.5rem 1.5rem; gap: 2rem; }
-      .cta-wrap { padding: 3.5rem 1.25rem; }
-      footer { padding: 1.25rem; flex-direction: column; align-items: flex-start; }
+      .wthumb { height: 160px; }
+
+      /* ABOUT */
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .about-av { width: 60px; height: 60px; font-size: 24px; }
+      .about-name { font-size: 26px; }
+      .skills-side { gap: 10px; }
+      .skill-card { padding: 1rem 1.25rem; }
+
+      /* CTA */
+      .cta-wrap { padding: 3rem 1.25rem; }
+      .cta-box { grid-template-columns: 1fr; padding: 2rem 1.5rem; gap: 2rem; border-radius: 16px; }
+      .cta-title { font-size: 28px; }
+      .cta-form input, .cta-form textarea { font-size: 16px; }
+
+      /* FOOTER */
+      footer { padding: 1.25rem; flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .flinks { flex-wrap: wrap; gap: 1rem; }
     }
   </style>
 </head>
