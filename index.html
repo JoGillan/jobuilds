@@ -235,11 +235,12 @@
     .wlink-arrow:hover { color: var(--orange); }
 
     /* ABOUT */
-    .about-wrap { display: grid; grid-template-columns: auto 1fr; gap: 2.5rem; align-items: start; }
+    .about-wrap { display: flex; flex-direction: column; gap: 1.5rem; align-items: flex-start; }
     .about-av-big {
       width: 80px; height: 80px; border-radius: 50%; background: var(--text);
       display: flex; align-items: center; justify-content: center;
       font-family: 'Lora', serif; font-style: italic; font-size: 30px; color: #fff; flex-shrink: 0;
+      margin-bottom: 0;
     }
     .about-name { font-size: 22px; font-weight: 800; letter-spacing: -0.75px; margin-bottom: 0.875rem; }
     .about-bio { font-size: 15px; color: #555; line-height: 1.8; margin-bottom: 0.75rem; }
@@ -305,9 +306,10 @@
       .hero-bottom { flex-direction: column; align-items: flex-start; }
       .hero-right-stack { align-items: flex-start; }
       footer { padding: 1.25rem; flex-direction: column; align-items: flex-start; }
-      .svc-row { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-      .svc-right { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .svc-row { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+      .svc-right { flex-direction: row; align-items: center; gap: 10px; }
       .svc-price { font-size: 16px; }
+      .svc-left { width: 100%; }
     }
   </style>
 </head>
@@ -418,7 +420,7 @@
     <div class="eyebrow">Recent work</div>
     <div class="sec-title">Things I've built</div>
     <div class="work-list">
-      <div class="wrow">
+      <a class="wrow" href="https://www.lesleycolborneinteriors.com" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 0;border-bottom:1px solid var(--border);gap:1rem;flex-wrap:wrap;">
         <div class="wrow-left">
           <div class="wthumb-sm" style="background:#fdf8f4;">🛋️</div>
           <div>
@@ -427,9 +429,9 @@
             <span class="wcat-pill">Interior Design</span>
           </div>
         </div>
-        <a class="wlink-arrow" href="https://www.lesleycolborneinteriors.com" target="_blank">↗</a>
-      </div>
-      <div class="wrow">
+        <span style="font-size:13px;color:#ccc;">↗</span>
+      </a>
+      <a class="wrow" href="https://www.renovateiq.co.uk" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 0;border-bottom:1px solid var(--border);gap:1rem;flex-wrap:wrap;">
         <div class="wrow-left">
           <div class="wthumb-sm" style="background:#f4fdf6;">🏠</div>
           <div>
@@ -438,7 +440,7 @@
             <span class="wcat-pill">App / SaaS</span>
           </div>
         </div>
-        <a class="wlink-arrow" href="https://www.renovateiq.co.uk" target="_blank">↗</a>
+        <span style="font-size:13px;color:#ccc;">↗</span>
       </div>
     </div>
   </div>
