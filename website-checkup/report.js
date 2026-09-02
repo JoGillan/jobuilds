@@ -8,6 +8,7 @@
   const reportRoast = document.getElementById('report-roast');
   const reportScore = document.getElementById('report-score');
   const categoriesContainer = document.getElementById('categories-container');
+  const prioritiesContainer = document.getElementById('priorities-container');
   const emailNote = document.getElementById('email-note');
 
   const params = new URLSearchParams(window.location.search);
@@ -40,6 +41,26 @@
     reportScore.textContent = report.overall.score;
     reportScore.className = `score-number ${report.overall.status}`;
 
+    prioritiesContainer.innerHTML = '';
+    if (report.topPriorities && report.topPriorities.length > 0) {
+      const box = document.createElement('div');
+      box.className = 'priority-box';
+
+      const heading = document.createElement('h3');
+      heading.textContent = 'Fix these first';
+      box.appendChild(heading);
+
+      const list = document.createElement('ol');
+      list.className = 'priority-list';
+      report.topPriorities.forEach((p) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<div class="priority-label">${escapeHtml(p.label)}</div><div class="priority-fix">${escapeHtml(p.fix)}</div>`;
+        list.appendChild(li);
+      });
+      box.appendChild(list);
+      prioritiesContainer.appendChild(box);
+    }
+
     categoriesContainer.innerHTML = '';
     Object.values(report.categories).forEach((cat) => {
       const section = document.createElement('div');
@@ -52,11 +73,15 @@
       cat.checks.forEach((check) => {
         const row = document.createElement('div');
         row.className = 'check-row';
+        const fixLine = check.fix
+          ? `<div class="check-fix">→ ${escapeHtml(check.fix)}</div>`
+          : '';
         row.innerHTML = `
           <span class="dot ${check.status}"></span>
           <div>
             <div class="check-label">${escapeHtml(check.label)}</div>
             <div class="check-detail">${escapeHtml(check.detail)}</div>
+            ${fixLine}
           </div>`;
         section.appendChild(row);
       });
