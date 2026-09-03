@@ -10,6 +10,12 @@
   const categoriesContainer = document.getElementById('categories-container');
   const prioritiesContainer = document.getElementById('priorities-container');
   const emailNote = document.getElementById('email-note');
+  const monitorUpsell = document.getElementById('monitor-upsell');
+  const monitorBtn = document.getElementById('monitor-btn');
+  const monitorPrice = document.getElementById('monitor-price');
+  const monitorError = document.getElementById('monitor-error');
+
+  let currentReportId = null;
 
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session_id');
@@ -29,13 +35,14 @@
         throw new Error(data.error || 'Could not verify your payment.');
       }
 
-      renderReport(data.report, data.emailedTo);
+      renderReport(data.report, data.emailedTo, data.priceMonthly, data.alreadyMonitoring);
     } catch (err) {
       showError(err.message);
     }
   }
 
-  function renderReport(report, emailedTo) {
+  function renderReport(report, emailedTo, priceMonthly, alreadyMonitoring) {
+    currentReportId = report.reportId;
     reportUrl.textContent = report.url;
     reportRoast.textContent = report.roast;
     reportScore.textContent = report.overall.score;
@@ -93,8 +100,41 @@
       emailNote.textContent = `We've also sent this report to ${emailedTo}.`;
     }
 
+    if (priceMonthly) {
+      monitorPrice.textContent = priceMonthly.label;
+    }
+
+    if (alreadyMonitoring) {
+      monitorUpsell.innerHTML = `<h3>You're all set</h3><p>We'll re-check this site every month and email you if anything changes.</p>`;
+    } else {
+      monitorBtn.addEventListener('click', startMonitoring);
+    }
+
     loadingState.style.display = 'none';
     reportState.style.display = 'block';
+  }
+
+  async function startMonitoring() {
+    if (!currentReportId) return;
+    monitorError.style.display = 'none';
+    monitorBtn.disabled = true;
+    monitorBtn.textContent = 'Redirecting to checkout…';
+
+    try {
+      const res = await fetch(`${API_BASE}/create-subscription-checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reportId: currentReportId }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || 'Could not start checkout.');
+      window.location.href = data.url;
+    } catch (err) {
+      monitorBtn.disabled = false;
+      monitorBtn.textContent = 'Start monthly monitoring';
+      monitorError.textContent = err.message;
+      monitorError.style.display = 'block';
+    }
   }
 
   function showError(message) {
