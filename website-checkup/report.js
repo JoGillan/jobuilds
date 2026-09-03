@@ -11,6 +11,12 @@
   const prioritiesContainer = document.getElementById('priorities-container');
   const emailNote = document.getElementById('email-note');
   const junkNote = document.getElementById('junk-note');
+  const platformNote = document.getElementById('platform-note');
+  const waybackBlock = document.getElementById('wayback-block');
+  const waybackHeading = document.getElementById('wayback-heading');
+  const waybackLabelOld = document.getElementById('wayback-label-old');
+  const waybackImgOld = document.getElementById('wayback-img-old');
+  const waybackImgNew = document.getElementById('wayback-img-new');
   const monitorUpsell = document.getElementById('monitor-upsell');
   const monitorBtn = document.getElementById('monitor-btn');
   const monitorPrice = document.getElementById('monitor-price');
@@ -48,6 +54,24 @@
     reportRoast.textContent = report.roast;
     reportScore.textContent = report.overall.score;
     reportScore.className = `score-number ${report.overall.status}`;
+
+    if (report.platformName) {
+      platformNote.textContent = `Detected platform: ${report.platformName} — fixes below are tailored for it.`;
+      platformNote.style.display = 'block';
+    } else {
+      platformNote.style.display = 'none';
+    }
+
+    if (report.wayback) {
+      const { yearsAgo, year, screenshotOld, screenshotNew } = report.wayback;
+      waybackHeading.textContent = `Still looks like ${year}?`;
+      waybackLabelOld.textContent = `${yearsAgo} year${yearsAgo === 1 ? '' : 's'} ago`;
+      waybackImgOld.src = screenshotOld;
+      waybackImgNew.src = screenshotNew;
+      waybackBlock.style.display = 'block';
+    } else {
+      waybackBlock.style.display = 'none';
+    }
 
     prioritiesContainer.innerHTML = '';
     if (report.topPriorities && report.topPriorities.length > 0) {
