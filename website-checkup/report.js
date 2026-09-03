@@ -10,6 +10,7 @@
   const categoriesContainer = document.getElementById('categories-container');
   const prioritiesContainer = document.getElementById('priorities-container');
   const emailNote = document.getElementById('email-note');
+  const junkNote = document.getElementById('junk-note');
   const monitorUpsell = document.getElementById('monitor-upsell');
   const monitorBtn = document.getElementById('monitor-btn');
   const monitorPrice = document.getElementById('monitor-price');
@@ -98,6 +99,7 @@
 
     if (emailedTo) {
       emailNote.textContent = `We've also sent this report to ${emailedTo}.`;
+      junkNote.style.display = 'block';
     }
 
     if (priceMonthly) {
