@@ -120,7 +120,8 @@
       <li data-step="2"><span class="step-icon">🔍</span><span>Checking if Google can even find you</span></li>
       <li data-step="3"><span class="step-icon">📞</span><span>Checking if anyone can tell how to contact you</span></li>
       <li data-step="4"><span class="step-icon">🔒</span><span>Checking whether it looks trustworthy</span></li>
-      <li data-step="5"><span class="step-icon">✍️</span><span>Writing up the verdict</span></li>
+      <li data-step="5"><span class="step-icon">🤖</span><span>Checking if ChatGPT can even read your site</span></li>
+      <li data-step="6"><span class="step-icon">✍️</span><span>Writing up the verdict</span></li>
     </ul>
   </div>
 
@@ -142,6 +143,19 @@
       <p>The full report breaks down every check above — what's wrong, why it matters, and what to do about it. Sent straight to your inbox too.</p>
       <p class="price">One-off payment — <span id="price-text">£15</span></p>
       <button class="btn-primary" id="pay-btn">Unlock full report</button>
+      <button class="btn-secondary" id="subscribe-btn">Or get monthly monitoring — from <span id="price-monthly-text">£9</span>/mo</button>
+      <p class="subscribe-hint">We'll re-check your site every month and email you if your score drops.</p>
+    </div>
+
+    <div class="compare-block" id="compare-block">
+      <h3>Curious how you compare?</h3>
+      <p>Paste in a competitor's website and we'll run the same free check on it.</p>
+      <form class="compare-form" id="compare-form">
+        <input type="text" id="competitor-input" placeholder="acompetitor.co.uk" autocomplete="off" required />
+        <button type="submit" class="btn-secondary" id="compare-btn">Compare</button>
+      </form>
+      <p class="error-msg" id="compare-error" style="display:none;"></p>
+      <div class="compare-result" id="compare-result" style="display:none;"></div>
     </div>
   </div>
 
