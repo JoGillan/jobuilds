@@ -321,6 +321,12 @@ button {
   color: var(--text);
 }
 
+.platform-note {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: -16px 0 24px;
+}
+
 .paywall {
   border: 1px solid var(--border);
   border-radius: 12px;
