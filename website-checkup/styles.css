@@ -432,11 +432,86 @@ button {
   border-top: 1px solid var(--border);
 }
 
+/* --- info / FAQ sections (SEO content) --- */
+
+.info-section,
+.faq-section {
+  margin-top: 64px;
+  padding-top: 48px;
+  border-top: 1px solid var(--border);
+}
+
+.info-section h2,
+.faq-section h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 30px;
+  margin: 0 0 12px;
+}
+
+.info-intro {
+  color: var(--text-muted);
+  font-size: 16px;
+  max-width: 52ch;
+  margin: 0 0 28px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.info-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 20px 22px;
+}
+
+.info-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+
+.info-card p {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: 0;
+}
+
+.faq-item {
+  padding: 20px 0;
+  border-top: 1px solid var(--border);
+}
+
+.faq-item:first-of-type {
+  border-top: none;
+}
+
+.faq-item h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+
+.faq-item p {
+  color: var(--text-muted);
+  font-size: 15px;
+  margin: 0;
+}
+
 @media (max-width: 520px) {
   .audit-form {
     flex-direction: column;
   }
   .wrap {
     padding: 40px 20px 72px;
+  }
+  .info-grid {
+    grid-template-columns: 1fr;
   }
 }
