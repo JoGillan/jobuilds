@@ -1,175 +1,722 @@
-(function () {
-  const loadingState = document.getElementById('loading-state');
-  const errorState = document.getElementById('error-state');
-  const errorDetail = document.getElementById('error-detail');
-  const reportState = document.getElementById('report-state');
+/* Website Checkup — styles
+   Palette + type intentionally match jobuilds.co.uk's existing
+   dark navy/green identity. Swap the CSS variables below if the
+   main site's exact hex values differ from these. */
 
-  const reportUrl = document.getElementById('report-url');
-  const reportRoast = document.getElementById('report-roast');
-  const reportScore = document.getElementById('report-score');
-  const categoriesContainer = document.getElementById('categories-container');
-  const prioritiesContainer = document.getElementById('priorities-container');
-  const emailNote = document.getElementById('email-note');
-  const junkNote = document.getElementById('junk-note');
-  const platformNote = document.getElementById('platform-note');
-  const waybackBlock = document.getElementById('wayback-block');
-  const waybackHeading = document.getElementById('wayback-heading');
-  const waybackLabelOld = document.getElementById('wayback-label-old');
-  const waybackImgOld = document.getElementById('wayback-img-old');
-  const waybackImgNew = document.getElementById('wayback-img-new');
-  const monitorUpsell = document.getElementById('monitor-upsell');
-  const monitorBtn = document.getElementById('monitor-btn');
-  const monitorPrice = document.getElementById('monitor-price');
-  const monitorError = document.getElementById('monitor-error');
+:root {
+  --bg: #0a0e12;
+  --panel: #12181f;
+  --panel-raised: #161d25;
+  --border: #232c35;
+  --text: #edf1f4;
+  --text-muted: #93a1ac;
+  --accent: #2fbf71;
+  --accent-dim: #1f8f55;
+  --accent-text: #0a0e12;
+  --red: #e5626a;
+  --amber: #e8b34f;
+  --green: #2fbf71;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Cabinet Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
 
-  let currentReportId = null;
+* {
+  box-sizing: border-box;
+}
 
-  const params = new URLSearchParams(window.location.search);
-  const sessionId = params.get('session_id');
+html {
+  scroll-behavior: smooth;
+}
 
-  if (!sessionId) {
-    showError("No payment session was found. If you've just paid, check your email — we sent the report there too.");
-  } else {
-    verify(sessionId);
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 64px 24px 96px;
+}
+
+.eyebrow-link {
+  display: inline-block;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 15px;
+  margin-bottom: 40px;
+}
+
+.eyebrow-link:hover {
+  color: var(--text);
+}
+
+h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(34px, 6vw, 52px);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin: 0 0 20px;
+}
+
+.sub {
+  color: var(--text-muted);
+  font-size: 18px;
+  max-width: 46ch;
+  margin: 0 0 36px;
+}
+
+.sub strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* --- URL form --- */
+
+.audit-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.audit-form input[type='text'] {
+  flex: 1;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 17px;
+  padding: 16px 18px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.audit-form input[type='text']::placeholder {
+  color: #5b6770;
+}
+
+.audit-form input[type='text']:focus {
+  border-color: var(--accent);
+}
+
+button {
+  font-family: var(--sans);
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-text);
+  border: none;
+  border-radius: 8px;
+  padding: 16px 24px;
+  font-size: 17px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+  background: #37d17e;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 20px;
+  font-size: 16px;
+}
+
+.btn-secondary:hover {
+  border-color: var(--text-muted);
+}
+
+.form-hint {
+  color: #5b6770;
+  font-size: 14px;
+}
+
+.error-msg {
+  color: var(--red);
+  font-size: 15px;
+  margin-top: 10px;
+}
+
+/* --- loading sequence --- */
+
+.loading-block {
+  display: none;
+  margin-top: 44px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 28px;
+}
+
+.loading-block.active {
+  display: block;
+}
+
+.loading-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.loading-steps li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  color: var(--text-muted);
+  font-size: 16px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.35s ease, transform 0.35s ease, color 0.35s ease;
+}
+
+.loading-steps li.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.loading-steps li.done {
+  color: var(--text);
+}
+
+.step-icon {
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
+}
 
-  async function verify(sessionId) {
-    try {
-      const res = await fetch(`${API_BASE}/verify?session_id=${encodeURIComponent(sessionId)}`);
-      const data = await res.json();
+/* --- teaser / report --- */
 
-      if (!res.ok) {
-        throw new Error(data.error || 'Could not verify your payment.');
-      }
+.result-block {
+  display: none;
+  margin-top: 44px;
+}
 
-      renderReport(data.report, data.emailedTo, data.priceMonthly, data.alreadyMonitoring);
-    } catch (err) {
-      showError(err.message);
-    }
+.result-block.active {
+  display: block;
+}
+
+.roast {
+  font-family: var(--serif);
+  font-size: 26px;
+  line-height: 1.35;
+  color: var(--text);
+  margin: 0 0 32px;
+  border-left: 3px solid var(--accent);
+  padding-left: 20px;
+}
+
+.score-row {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.score-number {
+  font-family: var(--serif);
+  font-size: 56px;
+  line-height: 1;
+}
+
+.score-number.pass {
+  color: var(--green);
+}
+.score-number.warn {
+  color: var(--amber);
+}
+.score-number.fail {
+  color: var(--red);
+}
+
+.score-label {
+  color: var(--text-muted);
+  font-size: 16px;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.category-chip {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  background: var(--panel);
+}
+
+.category-chip .dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.dot.pass {
+  background: var(--green);
+}
+.dot.warn {
+  background: var(--amber);
+}
+.dot.fail {
+  background: var(--red);
+}
+
+.category-chip .cat-name {
+  font-size: 15px;
+  color: var(--text);
+}
+
+.issue-count {
+  color: var(--text-muted);
+  font-size: 16px;
+  margin: 20px 0 32px;
+}
+
+.issue-count strong {
+  color: var(--text);
+}
+
+.platform-note {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: -16px 0 24px;
+}
+
+.wayback-block {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 24px;
+  background: var(--panel);
+}
+
+.wayback-block h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 24px;
+  margin: 0 0 20px;
+}
+
+.wayback-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.wayback-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wayback-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.wayback-col img {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #0a0e12;
+  display: block;
+}
+
+.paywall {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  background: var(--panel-raised);
+  text-align: left;
+}
+
+.paywall h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 24px;
+  margin: 0 0 10px;
+}
+
+.paywall p {
+  color: var(--text-muted);
+  margin: 0 0 20px;
+}
+
+.paywall .price {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.paywall #subscribe-btn {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.subscribe-hint {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin: 10px 0 0 !important;
+}
+
+/* --- competitor compare --- */
+
+.compare-block {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  margin-top: 16px;
+  text-align: left;
+}
+
+.compare-block h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 22px;
+  margin: 0 0 8px;
+}
+
+.compare-block > p {
+  color: var(--text-muted);
+  margin: 0 0 18px;
+}
+
+.compare-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.compare-form input[type='text'] {
+  flex: 1;
+  min-width: 200px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 13px 16px;
+  font-size: 16px;
+  color: var(--text);
+  font-family: var(--sans);
+}
+
+.compare-form input[type='text']:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.compare-result {
+  margin-top: 24px;
+}
+
+.compare-verdict {
+  font-family: var(--serif);
+  font-size: 20px;
+  margin: 0 0 18px;
+  color: var(--text);
+}
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.compare-col {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  background: var(--panel);
+}
+
+.compare-col-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.compare-col-label {
+  font-size: 14px;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.compare-score {
+  font-family: var(--serif);
+  font-size: 26px;
+  color: var(--text);
+}
+
+.compare-cat {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 14px;
+}
+
+.compare-cat .dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+/* --- full report page --- */
+
+.full-category {
+  margin-bottom: 32px;
+}
+
+.full-category h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 22px;
+  margin: 0 0 14px;
+}
+
+.check-row {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.check-row:first-of-type {
+  border-top: none;
+}
+
+.check-row .dot {
+  margin-top: 6px;
+}
+
+.check-label {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.check-detail {
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.check-fix {
+  color: var(--accent);
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+.priority-box {
+  border: 1px solid var(--accent-dim);
+  background: var(--panel-raised);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 40px;
+}
+
+.priority-box h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 22px;
+  margin: 0 0 14px;
+}
+
+.priority-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.priority-list li {
+  margin-bottom: 14px;
+}
+
+.priority-label {
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.priority-fix {
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.email-note {
+  color: var(--text-muted);
+  font-size: 15px;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.junk-note {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.monitor-upsell {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel-raised);
+  padding: 28px;
+  margin-top: 32px;
+}
+
+.monitor-upsell h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 22px;
+  margin: 0 0 10px;
+}
+
+.monitor-upsell p {
+  color: var(--text-muted);
+  margin: 0 0 18px;
+}
+
+.monitor-upsell .error-msg {
+  margin-top: 14px;
+}
+
+/* --- info / FAQ sections (SEO content) --- */
+
+.info-section,
+.faq-section {
+  margin-top: 64px;
+  padding-top: 48px;
+  border-top: 1px solid var(--border);
+}
+
+.info-section h2,
+.faq-section h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 30px;
+  margin: 0 0 12px;
+}
+
+.info-intro {
+  color: var(--text-muted);
+  font-size: 16px;
+  max-width: 52ch;
+  margin: 0 0 28px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.info-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 20px 22px;
+}
+
+.info-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+
+.info-card p {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: 0;
+}
+
+.faq-item {
+  padding: 20px 0;
+  border-top: 1px solid var(--border);
+}
+
+.faq-item:first-of-type {
+  border-top: none;
+}
+
+.faq-item h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+
+.faq-item p {
+  color: var(--text-muted);
+  font-size: 15px;
+  margin: 0;
+}
+
+@media (max-width: 520px) {
+  .audit-form {
+    flex-direction: column;
   }
-
-  function renderReport(report, emailedTo, priceMonthly, alreadyMonitoring) {
-    currentReportId = report.reportId;
-    reportUrl.textContent = report.url;
-    reportRoast.textContent = report.roast;
-    reportScore.textContent = report.overall.score;
-    reportScore.className = `score-number ${report.overall.status}`;
-
-    if (report.platformName) {
-      platformNote.textContent = `Detected platform: ${report.platformName} — fixes below are tailored for it.`;
-      platformNote.style.display = 'block';
-    } else {
-      platformNote.style.display = 'none';
-    }
-
-    if (report.wayback) {
-      const { yearsAgo, year, screenshotOld, screenshotNew } = report.wayback;
-      waybackHeading.textContent = `Still looks like ${year}?`;
-      waybackLabelOld.textContent = `${yearsAgo} year${yearsAgo === 1 ? '' : 's'} ago`;
-      waybackImgOld.src = screenshotOld;
-      waybackImgNew.src = screenshotNew;
-      waybackBlock.style.display = 'block';
-    } else {
-      waybackBlock.style.display = 'none';
-    }
-
-    prioritiesContainer.innerHTML = '';
-    if (report.topPriorities && report.topPriorities.length > 0) {
-      const box = document.createElement('div');
-      box.className = 'priority-box';
-
-      const heading = document.createElement('h3');
-      heading.textContent = 'Fix these first';
-      box.appendChild(heading);
-
-      const list = document.createElement('ol');
-      list.className = 'priority-list';
-      report.topPriorities.forEach((p) => {
-        const li = document.createElement('li');
-        li.innerHTML = `<div class="priority-label">${escapeHtml(p.label)}</div><div class="priority-fix">${escapeHtml(p.fix)}</div>`;
-        list.appendChild(li);
-      });
-      box.appendChild(list);
-      prioritiesContainer.appendChild(box);
-    }
-
-    categoriesContainer.innerHTML = '';
-    Object.values(report.categories).forEach((cat) => {
-      const section = document.createElement('div');
-      section.className = 'full-category';
-
-      const heading = document.createElement('h3');
-      heading.innerHTML = `<span class="dot ${cat.status}"></span>${escapeHtml(cat.name)}`;
-      section.appendChild(heading);
-
-      cat.checks.forEach((check) => {
-        const row = document.createElement('div');
-        row.className = 'check-row';
-        const fixLine = check.fix
-          ? `<div class="check-fix">→ ${escapeHtml(check.fix)}</div>`
-          : '';
-        row.innerHTML = `
-          <span class="dot ${check.status}"></span>
-          <div>
-            <div class="check-label">${escapeHtml(check.label)}</div>
-            <div class="check-detail">${escapeHtml(check.detail)}</div>
-            ${fixLine}
-          </div>`;
-        section.appendChild(row);
-      });
-
-      categoriesContainer.appendChild(section);
-    });
-
-    if (emailedTo) {
-      emailNote.textContent = `We've also sent this report to ${emailedTo}.`;
-      junkNote.style.display = 'block';
-    }
-
-    if (priceMonthly) {
-      monitorPrice.textContent = priceMonthly.label;
-    }
-
-    if (alreadyMonitoring) {
-      monitorUpsell.innerHTML = `<h3>You're all set</h3><p>We'll re-check this site every month and email you if anything changes.</p>`;
-    } else {
-      monitorBtn.addEventListener('click', startMonitoring);
-    }
-
-    loadingState.style.display = 'none';
-    reportState.style.display = 'block';
+  .wrap {
+    padding: 40px 20px 72px;
   }
-
-  async function startMonitoring() {
-    if (!currentReportId) return;
-    monitorError.style.display = 'none';
-    monitorBtn.disabled = true;
-    monitorBtn.textContent = 'Redirecting to checkout…';
-
-    try {
-      const res = await fetch(`${API_BASE}/create-subscription-checkout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reportId: currentReportId }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.url) throw new Error(data.error || 'Could not start checkout.');
-      window.location.href = data.url;
-    } catch (err) {
-      monitorBtn.disabled = false;
-      monitorBtn.textContent = 'Start monthly monitoring';
-      monitorError.textContent = err.message;
-      monitorError.style.display = 'block';
-    }
+  .info-grid {
+    grid-template-columns: 1fr;
   }
-
-  function showError(message) {
-    errorDetail.textContent = message;
-    loadingState.style.display = 'none';
-    errorState.style.display = 'block';
+  .compare-form {
+    flex-direction: column;
   }
-
-  function escapeHtml(str) {
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  .compare-grid {
+    grid-template-columns: 1fr;
   }
-})();
+  .wayback-grid {
+    grid-template-columns: 1fr;
+  }
+}
