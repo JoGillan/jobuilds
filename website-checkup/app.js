@@ -15,6 +15,14 @@
   const payBtn = document.getElementById('pay-btn');
   const priceHint = document.getElementById('price-hint');
   const priceText = document.getElementById('price-text');
+  const subscribeBtn = document.getElementById('subscribe-btn');
+  const priceMonthlyText = document.getElementById('price-monthly-text');
+
+  const compareForm = document.getElementById('compare-form');
+  const competitorInput = document.getElementById('competitor-input');
+  const compareBtn = document.getElementById('compare-btn');
+  const compareError = document.getElementById('compare-error');
+  const compareResult = document.getElementById('compare-result');
 
   let currentReportId = null;
 
@@ -48,7 +56,7 @@
       }
 
       currentReportId = data.reportId;
-      showTeaser(data.teaser, data.price);
+      showTeaser(data.teaser, data.price, data.priceMonthly);
     } catch (err) {
       showError(err.message);
     } finally {
@@ -79,6 +87,56 @@
     }
   });
 
+  subscribeBtn.addEventListener('click', async () => {
+    if (!currentReportId) return;
+    const originalLabel = subscribeBtn.innerHTML;
+    subscribeBtn.disabled = true;
+    subscribeBtn.textContent = 'Redirecting to checkout…';
+
+    try {
+      const res = await fetch(`${API_BASE}/create-subscription-checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reportId: currentReportId }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || 'Could not start checkout.');
+      window.location.href = data.url;
+    } catch (err) {
+      subscribeBtn.disabled = false;
+      subscribeBtn.innerHTML = originalLabel;
+      showError(err.message);
+    }
+  });
+
+  compareForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const value = competitorInput.value.trim();
+    if (!value || !currentReportId) return;
+
+    compareError.style.display = 'none';
+    compareResult.style.display = 'none';
+    compareBtn.disabled = true;
+    compareBtn.textContent = 'Comparing…';
+
+    try {
+      const res = await fetch(`${API_BASE}/compare`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reportId: currentReportId, competitorUrl: value }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Couldn't run that comparison.");
+      showCompare(data);
+    } catch (err) {
+      compareError.textContent = err.message;
+      compareError.style.display = 'block';
+    } finally {
+      compareBtn.disabled = false;
+      compareBtn.textContent = 'Compare';
+    }
+  });
+
   function runLoadingAnimation() {
     loadingSteps.forEach((li) => li.classList.remove('visible', 'done'));
     let i = 0;
@@ -93,7 +151,7 @@
     }, 480);
   }
 
-  function showTeaser(teaser, price) {
+  function showTeaser(teaser, price, priceMonthly) {
     roastText.textContent = teaser.roast;
     scoreNumber.textContent = teaser.overallScore;
     scoreNumber.className = `score-number ${teaser.overallStatus}`;
@@ -112,9 +170,55 @@
       priceHint.textContent = price.label;
       priceText.textContent = price.label;
     }
+    if (priceMonthly) {
+      priceMonthlyText.textContent = priceMonthly.label;
+    }
+
+    // Reset the compare block for a fresh check.
+    competitorInput.value = '';
+    compareError.style.display = 'none';
+    compareResult.style.display = 'none';
+    compareResult.innerHTML = '';
 
     resultBlock.classList.add('active');
     resultBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function showCompare(data) {
+    const { yours, theirs, youWin } = data;
+
+    const renderCategories = (categories) =>
+      categories
+        .map(
+          (c) =>
+            `<div class="compare-cat"><span class="dot ${c.status}"></span><span class="cat-name">${escapeHtml(c.name)}</span></div>`
+        )
+        .join('');
+
+    const verdict = youWin
+      ? `You're ahead — nice.`
+      : `Your competitor is currently ahead of you.`;
+
+    compareResult.innerHTML = `
+      <p class="compare-verdict">${verdict}</p>
+      <div class="compare-grid">
+        <div class="compare-col">
+          <div class="compare-col-head">
+            <span class="compare-col-label">You</span>
+            <span class="compare-score">${yours.overallScore}</span>
+          </div>
+          ${renderCategories(yours.categories)}
+        </div>
+        <div class="compare-col">
+          <div class="compare-col-head">
+            <span class="compare-col-label">${escapeHtml(new URL(theirs.url).hostname)}</span>
+            <span class="compare-score">${theirs.overallScore}</span>
+          </div>
+          ${renderCategories(theirs.categories)}
+        </div>
+      </div>
+    `;
+    compareResult.style.display = 'block';
   }
 
   function showError(message) {
