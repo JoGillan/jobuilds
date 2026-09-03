@@ -13,11 +13,6 @@
   const categoryGrid = document.getElementById('category-grid');
   const issueCount = document.getElementById('issue-count');
   const platformNote = document.getElementById('platform-note');
-  const waybackBlock = document.getElementById('wayback-block');
-  const waybackHeading = document.getElementById('wayback-heading');
-  const waybackLabelOld = document.getElementById('wayback-label-old');
-  const waybackImgOld = document.getElementById('wayback-img-old');
-  const waybackImgNew = document.getElementById('wayback-img-new');
   const payBtn = document.getElementById('pay-btn');
   const priceHint = document.getElementById('price-hint');
   const priceText = document.getElementById('price-text');
@@ -177,17 +172,6 @@
       platformNote.style.display = 'block';
     } else {
       platformNote.style.display = 'none';
-    }
-
-    if (teaser.wayback) {
-      const { yearsAgo, year, screenshotOld, screenshotNew } = teaser.wayback;
-      waybackHeading.textContent = `Still looks like ${year}?`;
-      waybackLabelOld.textContent = `${yearsAgo} year${yearsAgo === 1 ? '' : 's'} ago`;
-      waybackImgOld.src = screenshotOld;
-      waybackImgNew.src = screenshotNew;
-      waybackBlock.style.display = 'block';
-    } else {
-      waybackBlock.style.display = 'none';
     }
 
     if (price) {
