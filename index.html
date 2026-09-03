@@ -316,6 +316,10 @@
 
     /* HERO SERVICES */
     .hero-services { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: #fff; }
+
+    /* CHECKUP PROMO */
+    .checkup-promo { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .checkup-promo-desc { font-size: 16px; color: #666; line-height: 1.75; margin: 1rem 0 1.75rem; }
     .hero-service-item { display: flex; align-items: center; gap: 10px; padding: 0.9rem 1.5rem; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 500; color: var(--text); }
     .hero-service-item:last-child { border-bottom: none; }
     .hero-service-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
@@ -368,6 +372,7 @@
       .hero { padding: 2.5rem 1.25rem 0; }
       .hero-h1 { font-size: clamp(40px, 11vw, 64px); letter-spacing: -2px; }
       .hero-inner { grid-template-columns: 1fr; gap: 2rem; padding-bottom: 3rem; }
+      .checkup-promo { grid-template-columns: 1fr; gap: 2rem; }
       .hero-right { gap: 1rem; }
       .hero-stats-side { display: grid; grid-template-columns: 1fr 1fr; }
       .hstat-row { border-right: 1px solid var(--border); }
@@ -430,6 +435,7 @@
   <nav>
     <div class="logo"><span class="logo-text">Jo <em>Builds</em></span></div>
     <ul class="nav-links">
+      <li><a href="#checkup">Free Checkup</a></li>
       <li><a href="#work">Work</a></li>
       <li><a href="#services">Services</a></li>
       <li><a href="#about">About</a></li>
@@ -492,6 +498,27 @@
       <span class="m-item">Glasgow</span><span class="m-sep">✦</span>
       <span class="m-item">Real Results</span><span class="m-sep">✦</span>
       <span class="m-item">No Fluff</span><span class="m-sep">✦</span>
+    </div>
+  </div>
+
+  <div class="section" id="checkup">
+    <div class="checkup-promo">
+      <div class="checkup-promo-text">
+        <div class="sec-eyebrow">Free tool</div>
+        <div class="sec-title">Not sure where to start?<br>Check your website first.</div>
+        <p class="checkup-promo-desc">Paste in your website and get a plain-English breakdown of what's actually costing you customers — speed, mobile-friendliness, trust, Google findability, and whether AI tools like ChatGPT can even read your site. Free to check, no jargon, no £140/month subscription.</p>
+        <a href="/website-checkup/" class="btn-black">Run my free checkup →</a>
+      </div>
+      <div class="checkup-promo-list">
+        <div class="hero-services">
+          <div class="hero-service-item"><span class="hero-service-dot"></span>Speed</div>
+          <div class="hero-service-item"><span class="hero-service-dot"></span>Mobile friendliness</div>
+          <div class="hero-service-item"><span class="hero-service-dot"></span>Trust &amp; security</div>
+          <div class="hero-service-item"><span class="hero-service-dot"></span>Findability on Google</div>
+          <div class="hero-service-item"><span class="hero-service-dot"></span>Turning visitors into customers</div>
+          <div class="hero-service-item"><span class="hero-service-dot"></span>AI search readiness</div>
+        </div>
+      </div>
     </div>
   </div>
 
