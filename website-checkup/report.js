@@ -21,8 +21,12 @@
 
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session_id');
+  const ownerKey = params.get('owner_key');
+  const ownerReportId = params.get('reportId');
 
-  if (!sessionId) {
+  if (ownerKey && ownerReportId) {
+    verifyAsOwner(ownerKey, ownerReportId);
+  } else if (!sessionId) {
     showError("No payment session was found. If you've just paid, check your email — we sent the report there too.");
   } else {
     verify(sessionId);
@@ -35,6 +39,23 @@
 
       if (!res.ok) {
         throw new Error(data.error || 'Could not verify your payment.');
+      }
+
+      renderReport(data.report, data.emailedTo, data.priceMonthly, data.alreadyMonitoring);
+    } catch (err) {
+      showError(err.message);
+    }
+  }
+
+  async function verifyAsOwner(key, reportId) {
+    try {
+      const res = await fetch(
+        `${API_BASE}/owner-verify?key=${encodeURIComponent(key)}&reportId=${encodeURIComponent(reportId)}`
+      );
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Could not load that report.');
       }
 
       renderReport(data.report, data.emailedTo, data.priceMonthly, data.alreadyMonitoring);
