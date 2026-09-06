@@ -363,6 +363,14 @@ button {
   margin: 10px 0 0 !important;
 }
 
+.owner-link {
+  display: none;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: underline;
+}
+
 /* --- competitor compare --- */
 
 .compare-block {
