@@ -33,6 +33,13 @@
     currentReportId = params.get('reportId');
   }
 
+  // Owner-only: if you're browsing with your own secret key in the URL
+  // (index.html?owner_key=...), a free "view full report" link appears
+  // after each check — normal visitors never see this, since they'd never
+  // have that key in their URL. See README.md "Testing as the owner, for free".
+  const ownerKey = params.get('owner_key');
+  const ownerLink = document.getElementById('owner-link');
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const value = urlInput.value.trim();
@@ -180,6 +187,11 @@
     }
     if (priceMonthly) {
       priceMonthlyText.textContent = priceMonthly.label;
+    }
+
+    if (ownerKey && ownerLink) {
+      ownerLink.href = `report.html?owner_key=${encodeURIComponent(ownerKey)}&reportId=${encodeURIComponent(currentReportId)}`;
+      ownerLink.style.display = 'inline-block';
     }
 
     // Reset the compare block for a fresh check.
